@@ -9,3 +9,6 @@
 - [편향과 분산 그리고 규제 3가지](<LLM엔지니어/머신러닝/편향과 분산 그리고 규제 3가지.md>)
 - [ROC곡선과 PR곡선 그리고 교차검증 전략과 불균형처리 방법](<LLM엔지니어/머신러닝/ROC곡선과 PR곡선 그리고 교차검증 전략과 불균형처리 방법.md>)
 - [CV 기반 하이퍼파라미터 탐색과 누수 없는 End-to-End Pipeline](<LLM엔지니어/머신러닝/CV 기반 하이퍼파라미터 탐색과 누수 없는 End-to-End Pipeline.md>)
+
+### 딥러닝
+- [딥러닝 개요와 Tensor 그리고 Batch dimension](<LLM엔지니어/딥러닝/딥러닝 개요와 Tensor 그리고 Batch dimension.md>)
