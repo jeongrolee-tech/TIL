@@ -14,3 +14,4 @@
 - [딥러닝 개요와 Tensor 그리고 Batch dimension](<LLM엔지니어/딥러닝/딥러닝 개요와 Tensor 그리고 Batch dimension.md>)
 - [CPU와 GPU device 그리고 shape 오류 디버깅(퍼셉트론과 MLP 그리고 완전연결층)](<LLM엔지니어/딥러닝/CPU와 GPU device 그리고 shape 오류 디버깅(퍼셉트론과 MLP 그리고 완전연결층).md>)
 - [활성화함수(relu, sigmoid, softmax)](<LLM엔지니어/딥러닝/활성화함수(relu, sigmoid, softmax).md>)
+- [손실함수 SGD 와 Adam](<LLM엔지니어/딥러닝/손실함수 SGD 와 Adam.md>)
