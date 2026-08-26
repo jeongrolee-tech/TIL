@@ -16,3 +16,4 @@
 - [활성화함수(relu, sigmoid, softmax)](<LLM엔지니어/딥러닝/활성화함수(relu, sigmoid, softmax).md>)
 - [손실함수 SGD 와 Adam](<LLM엔지니어/딥러닝/손실함수 SGD 와 Adam.md>)
 - [역전파와 pytorch autograd](<LLM엔지니어/딥러닝/역전파와 pytorch autograd.md>)
+- [Transform 전처리와 Train·Valid Split 그리고 MLP 파이프라인 완성](<LLM엔지니어/딥러닝/Transform 전처리와 Train·Valid Split 그리고 MLP 파이프라인 완성.md>)
