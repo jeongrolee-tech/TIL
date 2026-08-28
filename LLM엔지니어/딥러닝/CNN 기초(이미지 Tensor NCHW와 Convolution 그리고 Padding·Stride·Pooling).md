@@ -5,12 +5,14 @@
 **11장1강. 이미지 데이터 구조와 channel**
 - 지금까지 MLP에서 다룬 입력은 `(batch_size, features)`의 **2차원** 텐서였지만, 이미지는 공간 구조(위/아래, 좌/우)를 가지므로 **4차원** 텐서로 다룸
   - PyTorch의 표준 이미지 batch 레이아웃은 **`(N, C, H, W)`** — 줄여서 **NCHW**
+
   | 축 | 이름 | 의미 |
   | --- | --- | --- |
   | N | batch_size | 한 번에 처리할 이미지 장수 |
   | C | channels | 색 성분 수 (RGB=3, 흑백=1) |
   | H | height | 이미지 세로 픽셀 수 |
   | W | width | 이미지 가로 픽셀 수 |
+
   ```python
   import torch
 
@@ -43,22 +45,26 @@
 - ⛔ `permute`는 **축의 순서만 바꾸는 view 연산** — 값을 정규화하거나 크기를 바꾸지 않고, 데이터 복사도 하지 않음
   - 대신 결과가 메모리에서 **연속(contiguous)하지 않을 수 있음** → 이후 `view`를 쓰면 에러가 날 수 있으므로 `.contiguous()`를 붙이거나, 애초에 `view` 대신 `reshape`을 사용
   - `permute`(축 재배치)와 `reshape`/`view`(원소 개수를 유지한 채 shape 변경)는 **역할이 완전히 다름** — `reshape(3, 32, 32)`로 HWC를 CHW로 바꾸면 픽셀이 뒤섞여 이미지가 망가짐
-- 참고: `torchvision.transforms.ToTensor()`는 PIL 이미지를 읽으면서 **HWC → CHW 변환과 0~255 → 0.0~1.0 스케일링을 함께** 수행 → DataLoader를 쓰면 대부분 이 변환이 자동으로 처리됨
+- 참고: `torchvision.transforms.ToTensor()`는 PIL 이미지를 읽으면서 **HWC → CHW 변환과 `0-255` → `0.0-1.0` 스케일링을 함께** 수행 → DataLoader를 쓰면 대부분 이 변환이 자동으로 처리됨
 - 💡 이미지 shape가 헷갈릴 때의 첫 번째 행동은 언제나 **`print(x.shape)`**
 
 **11장2강. Convolution, Kernel, Filter**
 - **CNN(Convolutional Neural Network)** = 이미지·영상처럼 **공간적 구조**를 가진 데이터를 처리하는 신경망
   - 이미지를 처음부터 한 줄로 펴지 않고, 작은 창(filter)을 이미지 전체에 반복 적용해 선·경계·질감 같은 **지역 패턴**을 찾음
 - CNN을 떠받치는 두 가지 핵심 아이디어
+
   | 아이디어 | 의미 | 얻는 것 |
   | --- | --- | --- |
   | 국소 연결(local connectivity) | 한 번에 이미지 전체가 아니라 작은 영역만 봄 | 공간 구조 보존, 연결 수 감소 |
   | 가중치 공유(weight sharing) | 같은 filter를 모든 위치에 반복 적용 | parameter 급감, 위치가 달라도 같은 패턴을 같은 방식으로 탐지 |
+
 - **왜 MLP 대신 CNN인가** — parameter 수를 직접 비교해보면 차이가 분명함
+
   | 방식 | 구성 | parameter 수 |
   | --- | --- | --- |
   | MLP | `(3,32,32)` flatten(3072) → `nn.Linear(3072, 32)` | 3072×32 + 32 = **98,336** |
   | CNN | `nn.Conv2d(3, 32, kernel_size=3, padding=1)` | 3×3×3×32 + 32 = **896** |
+
   - 게다가 MLP는 flatten하는 순간 "이 픽셀 옆에 저 픽셀이 있었다"는 **공간 정보가 사라지고**, 입력 H,W가 바뀌면 `in_features`도 전부 바뀜
   - Conv의 parameter 수는 **입력 H,W와 무관** — 같은 filter를 위치만 옮겨 쓰기 때문
 - 용어 정리
@@ -87,6 +93,7 @@
 - **RGB 입력에서 filter 하나가 하는 일**: R, G, B 세 channel의 같은 위치 영역을 **각각 계산한 뒤 전부 더해** 출력 channel **한 칸**을 만듦
   - 즉 filter는 `(in_channels, kh, kw)` 크기의 **3차원 블록**이고, 이런 블록이 `out_channels`개 있음
 - **`nn.Conv2d`의 핵심 인자**
+
   | 인자 | 의미 | 예시 |
   | --- | --- | --- |
   | `in_channels` | 입력 이미지/feature map의 channel 수 | RGB면 3 |
@@ -95,6 +102,7 @@
   | `padding` | 입력 가장자리에 덧붙일 두께 | 1 |
   | `stride` | kernel이 한 번에 이동하는 간격 | 1 또는 2 |
   | `bias` | channel별 bias 사용 여부 | BatchNorm을 붙이면 `False`로 두기도 함 |
+
 - **weight shape는 `(out_channels, in_channels, kernel_height, kernel_width)`**
   ```python
   import torch.nn as nn
@@ -107,11 +115,13 @@
   - parameter 수 = `out_channels × in_channels × kh × kw + out_channels`
 - 출력 텐서 shape는 여전히 **`(N, out_channels, H_out, W_out)`** — Conv는 channel 수를 바꾸고, H·W는 padding/stride가 결정
 - ⛔ 자주 하는 실수
+
   | 실수 | 증상 | 해결 |
   | --- | --- | --- |
   | 입력 channel과 `in_channels` 불일치 | `expected input[...] to have 3 channels, but got 1 channels instead` | 흑백이면 `in_channels=1`, RGB면 3 |
   | `out_channels`를 class 수로 오해 | 구조가 이상해지거나 마지막 Linear가 안 맞음 | 중간 `out_channels`는 **feature map 개수**, class 수는 **마지막 `nn.Linear`의 `out_features`** |
   | HWC를 그대로 입력 | channel 개수 에러 | `permute(2,0,1)` 후 `unsqueeze(0)` |
+
 - (심화) **PyTorch의 `Conv2d`는 엄밀히 말하면 cross-correlation** — 수학적 convolution과 달리 kernel을 뒤집지 않고 곱함. kernel 값 자체를 학습하므로 뒤집든 말든 표현력이 같아, 딥러닝에서는 관례적으로 convolution이라고 부름
 - (심화) **1×1 convolution**: `nn.Conv2d(64, 32, kernel_size=1)`은 H,W를 그대로 두고 **channel 수만 섞어서 조절**하는 용도 → 채널 압축·확장에 자주 쓰임
 
@@ -131,10 +141,12 @@
 
 **11장3강. Padding과 Stride**
 - **Padding** = 입력 가장자리 바깥에 값을 덧붙이는 것. 보통 0을 채우므로 **zero padding**
+
   | padding이 필요한 이유 | 설명 |
   | --- | --- |
   | 가장자리 정보 보존 | padding이 없으면 모서리 픽셀은 kernel에 몇 번 포함되지 않아 정보가 빨리 사라짐 |
   | 공간 크기 유지 | Conv를 여러 층 쌓아도 H,W가 급격히 줄지 않게 함 |
+
   - `kernel_size=3, stride=1, padding=1` 조합은 **H,W를 그대로 유지**하는 대표 레시피 (`same` 크기)
 - **Stride** = kernel이 한 번에 건너뛰는 칸 수. stride가 커지면 kernel이 방문하는 위치 수가 줄어 **출력 H,W가 작아짐**
 - ⭐ **출력 크기 공식** (가장 자주 쓰는 형태, `dilation=1` 기준)
@@ -146,6 +158,7 @@
   - `dilation`까지 포함한 일반형: `H_out = floor((H_in + 2P − D×(K−1) − 1) / S) + 1`
   - `floor`(내림)가 붙는 이유: kernel이 입력 밖으로 나가는 위치는 아예 계산하지 않고 **버리기** 때문
 - 대표 조합 정리 (`H_in = 32` 기준)
+
   | K | P | S | H_out | 효과 |
   | --- | --- | --- | --- | --- |
   | 3 | 1 | 1 | 32 | 크기 유지 (가장 흔한 기본형) |
@@ -153,6 +166,7 @@
   | 5 | 2 | 1 | 32 | 크기 유지 (더 넓은 시야) |
   | 3 | 1 | 2 | 16 | 절반으로 축소 |
   | 7 | 3 | 2 | 16 | 절반 축소 + 넓은 시야 |
+
   - 규칙: **stride=1이고 kernel이 홀수일 때 `padding = (K−1)/2`이면 H,W가 유지됨**
   ```python
   import torch
@@ -208,23 +222,27 @@
   ```
   - 각 2×2 블록의 최댓값: 좌상 `{1,2,5,6}` → 6, 우상 `{3,4,7,8}` → 8, 좌하 `{9,10,13,14}` → 14, 우하 `{11,12,15,16}` → 16
 - **왜 pooling을 쓰는가**
+
   | 목적 | 설명 |
   | --- | --- |
   | 공간 크기 감소 | H,W를 줄여 이후 층의 계산량과 메모리를 줄임 |
   | 중요한 반응 유지 | MaxPool은 "가장 강하게 반응한" 값만 남김 |
   | 작은 위치 변화에 둔감 | 특징이 몇 픽셀 이동해도 비슷한 출력 (local translation invariance) |
   | receptive field 확대 | 같은 kernel이 더 넓은 원본 영역을 보게 됨 |
+
 - ⭐ **Pooling은 channel 수를 바꾸지 않음** — 각 channel 안에서 **독립적으로** 공간 축만 줄임
   - `(8, 16, 32, 32)` → `MaxPool2d(2)` → `(8, 16, 16, 16)`  (N=8, C=16 그대로)
 - Pooling 출력 크기도 Conv와 **같은 공식**을 사용: `H_out = floor((H_in + 2P − K) / S) + 1`
   - `MaxPool2d(2)`는 `K=2, S=2, P=0` → 짝수 H,W면 정확히 절반
   - **홀수일 때 주의**: `H_in=7` → `floor((7−2)/2)+1 = 3`으로 한 줄이 버려짐 → 버리기 싫으면 `ceil_mode=True`(→4)
 - Pooling 종류 비교
+
   | 종류 | 동작 | 특징 |
   | --- | --- | --- |
   | `nn.MaxPool2d` | 영역의 최댓값 | 가장 강한 반응 보존, 경계·질감에 강함 (기본 선택) |
   | `nn.AvgPool2d` | 영역의 평균 | 전체적으로 부드럽게, 강한 반응이 희석됨 |
   | `nn.AdaptiveAvgPool2d((1,1))` | 각 channel 전체를 평균내 1×1로 | **Global Average Pooling** — 입력 H,W와 무관하게 `(N, C, 1, 1)` 출력 |
+
   - 최근 CNN은 pooling 대신 **stride=2 convolution**으로 크기를 줄이기도 함(줄이는 방법 자체를 학습시키는 셈)
 - **CNN block에서의 사용** — `Conv → ReLU → Pool`이 기본 단위
   ```python
@@ -252,14 +270,17 @@
   x = torch.flatten(x, start_dim=1)   # (batch, 1024)  <- batch 차원(0번)은 유지
   fc = nn.Linear(1024, 10)            # in_features == flatten_dim == 1024
   ```
+
   | 방법 | 특징 |
   | --- | --- |
   | `torch.flatten(x, start_dim=1)` | 함수형. batch 차원을 남기고 나머지를 모두 펼침 |
   | `nn.Flatten()` | `nn.Sequential` 안에 넣을 수 있는 layer 버전. 기본이 `start_dim=1` |
   | `x.view(x.size(0), -1)` | 빠르지만 **contiguous하지 않으면 에러** |
   | `x.reshape(x.size(0), -1)` | 필요하면 내부에서 복사해줘서 더 안전 |
+
   - ⛔ `torch.flatten(x)`처럼 `start_dim`을 빼면 **batch까지 섞여** `(N×C×H×W,)` 한 줄이 되어버림
 - **shape 추적표**를 손으로 한 번 그려두면 flatten_dim 계산 실수가 거의 사라짐 (입력 `(N, 3, 32, 32)` 기준)
+
   | 단계 | 연산 | 출력 shape |
   | --- | --- | --- |
   | 입력 | — | `(N, 3, 32, 32)` |
@@ -271,6 +292,7 @@
   |  | `MaxPool2d(2)` | `(N, 128, 4, 4)` |
   | flatten | `flatten(start_dim=1)` | `(N, 2048)` ← 128×4×4 |
   | classifier | `Linear(2048, 10)` | `(N, 10)` |
+
 - ⭐ **더미 입력으로 flatten_dim을 자동 계산하기** — 구조를 바꿀 때마다 손계산하지 않아도 됨
   ```python
   feature_extractor = nn.Sequential(
@@ -303,12 +325,14 @@
   ```
   - 입력 크기가 바뀌어도 Linear를 다시 계산할 필요가 없고, parameter 수도 크게 줄어듦
 - ⛔ 대표적인 shape 에러와 원인
+
   | 에러 메시지(요지) | 원인 | 해결 |
   | --- | --- | --- |
   | `mat1 and mat2 shapes cannot be multiplied (8x1024 and 2048x10)` | flatten_dim ≠ Linear의 `in_features` | Conv/Pool 구조를 바꿨으면 flatten_dim도 다시 계산 |
   | `expected input[...] to have 3 channels, but got 1 channels` | 입력 channel ≠ `in_channels` | 흑백/RGB 확인, HWC→CHW 변환 확인 |
   | `view size is not compatible ... use .reshape()` | `permute` 이후 non-contiguous 상태에서 `view` | `.contiguous()` 또는 `reshape` 사용 |
   | 학습은 되는데 accuracy가 이상함 | batch 차원까지 flatten | `start_dim=1` 확인 |
+
   - `Conv2d`는 batch 없는 3차원 입력 `(C,H,W)`도 받아주지만, 그 뒤 `flatten(start_dim=1)`부터 의미가 어긋남 → **입력에 batch 차원이 있는지 먼저 확인**
 - 💡 디버깅 팁: `nn.Sequential` 사이사이에 shape를 찍어보는 것이 가장 빠름
   ```python
@@ -320,10 +344,12 @@
 
 **11장6강. CNN classifier 구조 연결**
 - 지금까지의 Conv / ReLU / Pooling / Flatten / Linear를 이어 붙여 **이미지 분류기**를 완성
+
   | 부분 | 역할 | 구성 |
   | --- | --- | --- |
   | **feature extractor** | 이미지에서 공간적 특징 추출 | `Conv2d` + `ReLU` + `MaxPool2d` 반복 |
   | **classifier** | 추출된 특징을 class별 logits로 변환 | `Flatten` + `Linear` (+ `Dropout`) |
+
   ```python
   import torch
   import torch.nn as nn
