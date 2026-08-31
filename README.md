@@ -19,3 +19,4 @@
 - [Transform 전처리와 Train·Valid Split 그리고 MLP 파이프라인 완성](<LLM엔지니어/딥러닝/Transform 전처리와 Train·Valid Split 그리고 MLP 파이프라인 완성.md>)
 - [실험 재현성과 checkpoint 관리 그리고 과적합·과소적합 진단](<LLM엔지니어/딥러닝/실험 재현성과 checkpoint 관리 그리고 과적합·과소적합 진단.md>)
 - [CNN 기초(이미지 Tensor NCHW와 Convolution 그리고 Padding·Stride·Pooling)](<LLM엔지니어/딥러닝/CNN 기초(이미지 Tensor NCHW와 Convolution 그리고 Padding·Stride·Pooling).md>)
+- [CNN 모델 설계·실험 리포팅과 RNN·LSTM 기초(GPU Memory와 Hidden State·Cell State)](<LLM엔지니어/딥러닝/CNN 모델 설계·실험 리포팅과 RNN·LSTM 기초(GPU Memory와 Hidden State·Cell State).md>)
