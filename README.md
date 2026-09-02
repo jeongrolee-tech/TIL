@@ -21,5 +21,8 @@
 - [CNN 기초(이미지 Tensor NCHW와 Convolution 그리고 Padding·Stride·Pooling)](<LLM엔지니어/딥러닝/CNN 기초(이미지 Tensor NCHW와 Convolution 그리고 Padding·Stride·Pooling).md>)
 - [CNN 모델 설계·실험 리포팅과 RNN·LSTM 기초(GPU Memory와 Hidden State·Cell State)](<LLM엔지니어/딥러닝/CNN 모델 설계·실험 리포팅과 RNN·LSTM 기초(GPU Memory와 Hidden State·Cell State).md>)
 
+### 딥러닝 심화
+- [RNN·LSTM 한계와 Transformer 필요성 그리고 Tokenizer·Padding·Dataset 파이프라인](<LLM엔지니어/딥러닝 심화/RNN·LSTM 한계와 Transformer 필요성 그리고 Tokenizer·Padding·Dataset 파이프라인.md>)
+
 ### AI Agent
 - [Harness Engineering(Agent 실행 환경 설계와 승인·복구·외부 검증)](<LLM엔지니어/AI Agent/Harness Engineering(Agent 실행 환경 설계와 승인·복구·외부 검증).md>)
