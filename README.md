@@ -23,6 +23,7 @@
 
 ### 딥러닝 심화
 - [RNN·LSTM 한계와 Transformer 필요성 그리고 Tokenizer·Padding·Dataset 파이프라인](<LLM엔지니어/딥러닝 심화/RNN·LSTM 한계와 Transformer 필요성 그리고 Tokenizer·Padding·Dataset 파이프라인.md>)
+- [Attention Q·K·V와 Scaled Dot-Product 그리고 Multi-Head Attention Shape](<LLM엔지니어/딥러닝 심화/Attention Q·K·V와 Scaled Dot-Product 그리고 Multi-Head Attention Shape.md>)
 
 ### AI Agent
 - [Harness Engineering(Agent 실행 환경 설계와 승인·복구·외부 검증)](<LLM엔지니어/AI Agent/Harness Engineering(Agent 실행 환경 설계와 승인·복구·외부 검증).md>)
